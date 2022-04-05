@@ -1,0 +1,46 @@
+body {
+  padding: 0;
+  text-align: center;
+}
+.game-intro {
+  /* float: left; */
+  /* padding: 0% 10%; */
+  padding-top: 10px;
+}
+
+.game-intro p {
+  font-size: 18px;
+  font-family: "Verdana"
+}
+
+.logo-img {
+  width: 150px;
+}
+.arrows-img {
+  width: 100px;
+}
+body button {
+  font-size: 30px;
+  background-color: purple;
+  color: #fff;
+  padding: 10px 10px;
+  border: 0;
+  box-shadow: 0;
+  border-radius: 5px;
+  margin-bottom: 10px;
+}
+
+#game-board {
+    /* float: left; */
+
+  /* float: left; */
+  /* padding: 20px 0px; */
+  border: 1px solid black;
+}
+
+canvas {
+  border: 1px solid black;
+  background-image: url("/images/cloudy-background.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+}
