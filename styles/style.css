@@ -41,7 +41,7 @@ body button {
 
 canvas {
   border: 1px solid black;
-  background-image: url("/images/cloudy-background.jpg");
+  background-image: url("cloudy-background.jpg");
   background-size: cover;
   background-repeat: no-repeat;
 }
