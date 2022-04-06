@@ -12,11 +12,15 @@ window.onload = () => {
 
   //This variable is the reference for how we stop adding blocks to the array when the game ends
   let int;
+  let gameOn = false;
 
   //This gets called when the "StartGame" button is pressed
   function startGame() {
-    int = setInterval(addItem, 2000);
-    animloop();
+    if (gameOn === false) {
+      int = setInterval(addItem, 2000);
+      animloop();
+      gameOn = true;
+    }
   }
 
   //This variable is the reference to the animation loop. This is called to cease animations when the game ends
@@ -49,18 +53,20 @@ window.onload = () => {
   //   player.score++;
   // }
 
-  // function gameOver() {
-  //   window.cancelAnimationFrame(game);
-  //   clearInterval(int);
-  //   ctx.fillStyle = "black";
-  //   ctx.fillRect(0, 0, w, h);
-  //   ctx.fillStyle = "red";
-  //   ctx.font = "50px sans-serif";
-  //   ctx.fillText("GAME OVER", 100, 100);
-  //   ctx.fillStyle = "white";
-  //   ctx.font = "40px sans-serif";
-  //   ctx.fillText(`Final Score: ${player.score}`, 100, 300);
-  // }
+  function gameOver() {
+    window.cancelAnimationFrame(game);
+    clearInterval(int);
+    spaceship.score -= droppedArr.length
+    ctx.fillStyle = "black";
+    ctx.fillRect(0, 0, w, h);
+    ctx.fillStyle = "red";
+    ctx.font = "50px sans-serif";
+    ctx.fillText("GAME OVER", 100, 100);
+    ctx.fillStyle = "white";
+    ctx.font = "40px sans-serif";
+    ctx.fillText(`Final Score: ${player.score}`, 100, 300);
+    gameOn = false
+  }
 
   // document.addEventListener("keydown", move);
 
@@ -159,7 +165,7 @@ window.onload = () => {
   };
 
   const shipImage = new Image();
-  shipImage.src = "/images/alien-spaceship.png";
+  shipImage.src = "images/alien-spaceship.png";
 
   var spaceship = {
     x: w / 2,
@@ -188,6 +194,7 @@ window.onload = () => {
       ctx.restore();
     },
     grabbedItems: [],
+    score: 0,
   };
 
   var frameRate = 1 / 40;
@@ -219,9 +226,22 @@ window.onload = () => {
 
     obj.x += obj.vx * frameRate * 100;
     obj.y += obj.vy * frameRate * 100;
-    
 
-    if (obj.y > canvas.height - obj.radius) {
+    if (
+      obj.y > canvas.height - obj.radius &&
+      obj.color === "red" &&
+      obj.x < canvas.width / 2
+    ) {
+      obj.vy = obj.vy;
+      // spaceship.score +=1;
+    } else if (
+      obj.y > canvas.height - obj.radius &&
+      obj.color === "yellow" &&
+      obj.x > canvas.width / 2
+    ) {
+      obj.vy = obj.vy;
+      // spaceship.score +=1;
+    } else if (obj.y > canvas.height - obj.radius) {
       obj.vy *= obj.restitution;
       obj.y = canvas.height - obj.radius;
     }
@@ -341,6 +361,10 @@ window.onload = () => {
     requestAnimationFrame(animloop, canvas);
     ctx.clearRect(0, 0, w, h);
 
+    ctx.fillStyle = "white";
+    ctx.font = "24px sans-serif";
+    ctx.fillText(`Score: ${spaceship.score}`, 70, 30);
+
     //rotation
     if (keys[37]) spaceship.r -= 0.05;
     if (keys[39]) spaceship.r += 0.05;
@@ -417,8 +441,20 @@ window.onload = () => {
       detectCollision(droppedObj, slider1);
       detectCollision(droppedObj, slider2);
       updatePosition(droppedObj);
+
+      if (droppedArr[i].y > canvas.height) {
+        spaceship.score += 1;
+        droppedArr.splice(i, 1);
+
+        // droppedArr[i].pop();
+      }
+      // console.log(droppedArr)
       // droppedArr[i].y++
     }
+
+    // if (droppedObj.y === canvas.height && droppedObj.vy === 0 ) {
+    //   score -= 1
+    // }
 
     // updatePosition(poppedObj)
 
@@ -430,5 +466,7 @@ window.onload = () => {
     // detectCollision(poppedObj, obstacle)
     // detectCollision(poppedObj, slider1)
     // detectCollision(poppedObj, slider2)
+
+    // if (droppedArr[i].y > canvas.height) {}
   }
 };
