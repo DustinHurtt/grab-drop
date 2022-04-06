@@ -1,6 +1,7 @@
 body {
   padding: 0;
   text-align: center;
+  background-color: rgba(30, 16, 63, 0.764);
 }
 .game-intro {
   /* float: left; */
