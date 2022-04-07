@@ -1,4 +1,10 @@
-window.onload = () => {
+
+
+
+// window.onload = () => {
+
+
+
   document.getElementById("start-button").onclick = () => {
     startGame();
   };
@@ -10,21 +16,128 @@ window.onload = () => {
   const h = canvas.height;
   const w = canvas.width;
 
+  ctx.font = "40px Arial";
+  ctx.textAlign = "center";
+  ctx.fillStyle = "white";
+  ctx.fillText("Alien Grab & Drop", canvas.width / 2, canvas.height / 16);
+  ctx.font = "20px Arial";
+  ctx.textAlign = "center";
+  ctx.fillStyle = "white";
+  ctx.fillText("Click StartGame to play", canvas.width / 2, canvas.height - 50);
+  ctx.fillText(
+    "Use left/right keys to rotate spaceship, up key for propulsion",
+    canvas.width / 2,
+    canvas.height / 6
+  );
+  ctx.fillStyle = "yellow";
+  ctx.fillText(
+    "Down key to drop farm animal. Cows must be dropped on the left. Sheep on the right.",
+    canvas.width / 2,
+    canvas.height / 5
+  );
+  ctx.fillText(
+    "Any animal dropped on the wrong side will count against your final score.",
+    canvas.width / 2,
+    canvas.height / 4.3
+  );
+
+  let game;
+
+
+  const shipImage = new Image();
+  shipImage.src = "images/alien-spaceship.png";
+
+  var spaceshipblueprint = {
+    x: w / 2,
+    y: h / 5,
+    w: 40,
+    h: 40,
+    vx: 0,
+    vy: 0,
+    ax: 0,
+    ay: 0,
+    r: -1.55,
+    mass: 0.1,
+    radius: 15,
+    restitution: -0.7,
+    fillColor: null,
+    draw: function () {
+      ctx.fillStyle = spaceship.fillColor || "rgba(250, 250, 250, 0.1)";
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, 60, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.closePath();
+      ctx.save();
+      ctx.translate(this.x, this.y);
+      ctx.rotate(this.r);
+      ctx.drawImage(shipImage, -30, -60, 60, 120);
+      ctx.restore();
+    },
+    grabbedItems: [],
+    score: 0,
+  };
+
+  var keys = [];
+
+  let spaceship = {...spaceshipblueprint};
   //This variable is the reference for how we stop adding blocks to the array when the game ends
   let int;
   let gameOn = false;
-
+  let timeInt;
+  let oneSecond = 1000
+  let time = 5;
+  let droppedArr;
   //This gets called when the "StartGame" button is pressed
   function startGame() {
+    console.log("GAME ON", gameOn)
     if (gameOn === false) {
-      int = setInterval(addItem, 2000);
-      animloop();
       gameOn = true;
+      console.log("GAME ON2", gameOn)
+      time=5
+      int = setInterval(addItem, 2000);
+      timeInt = setInterval(timer, oneSecond)
+      itemArr = [];
+      droppedArr = [];
+      spaceship = {...spaceshipblueprint}
+      // spaceship = {
+      //   x: w / 2,
+      //   y: h / 5,
+      //   w: 40,
+      //   h: 40,
+      //   vx: 0,
+      //   vy: 0,
+      //   ax: 0,
+      //   ay: 0,
+      //   r: -1.55,
+      //   mass: 0.1,
+      //   radius: 15,
+      //   restitution: -0.7,
+      //   fillColor: null,
+      //   draw: function () {
+      //     ctx.fillStyle = spaceship.fillColor || "rgba(250, 250, 250, 0.1)";
+      //     ctx.beginPath();
+      //     ctx.arc(this.x, this.y, 60, 0, Math.PI * 2);
+      //     ctx.fill();
+      //     ctx.closePath();
+      //     ctx.save();
+      //     ctx.translate(this.x, this.y);
+      //     ctx.rotate(this.r);
+      //     ctx.drawImage(shipImage, -30, -60, 60, 120);
+      //     ctx.restore();
+      //   },
+      //   grabbedItems: [],
+      //   score: 0,
+      // };
+  
+      // spaceship = {};
+      animloop();
+
     }
+
   }
 
   //This variable is the reference to the animation loop. This is called to cease animations when the game ends
-  let game;
+
 
   // function animate() {
   //   game = window.requestAnimationFrame(animate);
@@ -53,48 +166,68 @@ window.onload = () => {
   //   player.score++;
   // }
 
+
+function timer() {
+    --time;
+    if (time < 0) {
+        time = 5;
+    }
+}
+
+
   function gameOver() {
     window.cancelAnimationFrame(game);
     clearInterval(int);
-    spaceship.score -= droppedArr.length
+    clearInterval(timeInt);
+    // spaceship.score -= droppedArr.length
     ctx.fillStyle = "black";
     ctx.fillRect(0, 0, w, h);
     ctx.fillStyle = "red";
     ctx.font = "50px sans-serif";
-    ctx.fillText("GAME OVER", 100, 100);
+    ctx.fillText("GAME OVER", w/2, 100);
+    if (droppedArr.length > 0) {
+      ctx.fillStyle = "white";
+      ctx.font = "30px sans-serif";
+      ctx.fillText(`${droppedArr.length} domesticated earthlings failed to beam down and are subtracted from your score.`, 50, 250);
+    }
     ctx.fillStyle = "white";
     ctx.font = "40px sans-serif";
-    ctx.fillText(`Final Score: ${player.score}`, 100, 300);
-    gameOn = false
+    ctx.fillText(`Final Score: ${spaceship.score - droppedArr.length}`, w/2, 400);
+    if (spaceship.score - droppedArr.length < 10) {
+      ctx.fillStyle = "red"
+      ctx.font = "48px sans-serif";
+      ctx.fillText(`You have failed and will be sent to the Delta Quadrant!`, w/2, 500);
+    }
+    if (spaceship.score - droppedArr.length >= 10) {
+      ctx.fillStyle = "white"
+      ctx.font = "50px sans-serif";
+      ctx.fillText(`Congratulations! You've won!`, 200, 500);
+      ctx.fillStyle = "red"
+      ctx.font = "48px sans-serif";
+      ctx.fillText(`You may remain on Earth.`, 240, 600);
+    }
+    gameOn = false;
+    
+    // document.getElementById("start-button").onclick = () => {
+    //   startGame();
+    // };
+
+    
   }
 
-  // document.addEventListener("keydown", move);
-
-  // function detectCollision(player, obj) {
-  //   if (
-  //     player.x < obj.x + obj.w &&
-  //     player.x + player.w > obj.x &&
-  //     player.y < obj.y + obj.h &&
-  //     player.y + player.h > obj.y
-  //   ) {
-  //     return true;
-  //   } else {
-  //     return false;
-  //   }
-  // }
 
   class Item {
     constructor(id) {
       this.x = Math.random() * canvas.width;
       this.y = (Math.random() * canvas.height) / 2;
-      this.w = 20;
-      this.h = 20;
+      this.w = 60;
+      this.h = 30;
       this.color = this.generateColor();
-      this.points = this.generatePoints();
       this.id = id;
       this.colorArray = [];
       this.fillstyle, this.fillRect;
     }
+  
 
     generateColor = () => {
       let col = "";
@@ -106,11 +239,18 @@ window.onload = () => {
 
       return col;
     };
-
-    generatePoints = () => {
-      return Math.floor(Math.random() * 5) + 1;
-    };
   }
+
+  const cow = new Image();
+  cow.src = "/images/Dairy-Cow-PNG-Image.png";
+
+  const sheep = new Image();
+  sheep.src = "/images/sheep_on_a_transparent_background_by_zoostock_ddhetu0-fullview.png"
+
+  //   generatePoints = () => {
+  //     return Math.floor(Math.random() * 5) + 1;
+  //   };
+  // }
 
   let itemArr = [];
   let itemsCreated = 0;
@@ -120,82 +260,56 @@ window.onload = () => {
   }
 
   let colors = {
-    yellow: "rgba(250, 250, 210, 0.3)",
-    red: "rgba(240, 128, 128, 0.3)",
+    yellow: "rgba(189, 36, 218, 0.4)",
+    red: "rgba(37, 217, 38, 0.4)",
   };
-
-  // let poppedObj = {
-
-  // }
+  
+  let waterTower = new Image()
+  waterTower.src = "/images/water-tower.png"
 
   let obstacle = {
     x: canvas.width / 2 - 10,
-    y: (canvas.height * 2) / 3,
+    y: (canvas.height * 0.6),
     w: 20,
-    h: 217,
+    h: 260,
     // fillColor : 'black',
     draw: function () {
       ctx.fillStyle = "black";
       ctx.fillRect(this.x, this.y, this.w, this.h);
+      ctx.drawImage (waterTower, this.x - 160, this.y - 20, 340, 320)
     },
   };
+
+  let slider = new Image()
+  slider.src = "/images/ufo-platform.png"
 
   let slider1 = {
     x: 0,
     y: 640,
-    w: 100,
-    h: 20,
+    w: 200,
+    h: 40,
     sliderSpeed: 6,
     draw: function () {
-      ctx.fillStyle = "black";
-      ctx.fillRect(this.x, this.y, this.w, this.h);
+      // ctx.fillStyle = "black";
+      // ctx.fillRect(this.x-100, this.y-10, this.w, this.h);
+      ctx.drawImage (slider, this.x-126, this.y-30, 250, 60)
     },
   };
 
   let slider2 = {
     x: canvas.width - 100,
     y: 640,
-    w: 100,
-    h: 20,
-    sliderSpeed: -6,
-    draw: function () {
-      ctx.fillStyle = "black";
-      ctx.fillRect(this.x, this.y, this.w, this.h);
-    },
-  };
-
-  const shipImage = new Image();
-  shipImage.src = "images/alien-spaceship.png";
-
-  var spaceship = {
-    x: w / 2,
-    y: h / 2,
-    w: 40,
+    w: 200,
     h: 40,
-    vx: 0,
-    vy: 0,
-    ax: 0,
-    ay: 0,
-    r: -1.55,
-    mass: 0.1,
-    radius: 15,
-    restitution: -0.7,
-    fillColor: null,
+    sliderSpeed: 6,
     draw: function () {
-      ctx.fillStyle = spaceship.fillColor || "rgba(250, 250, 210, 0.3)";
-      ctx.beginPath();
-      ctx.arc(this.x, this.y, 60, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.closePath();
-      ctx.save();
-      ctx.translate(this.x, this.y);
-      ctx.rotate(this.r);
-      ctx.drawImage(shipImage, -30, -60, 60, 120);
-      ctx.restore();
+      // ctx.fillStyle = "black";
+      // ctx.fillRect(this.x, this.y-10, this.w, this.h);
+      ctx.drawImage (slider, this.x-26, this.y-30, 250, 60)
     },
-    grabbedItems: [],
-    score: 0,
   };
+
+
 
   var frameRate = 1 / 40;
   var frameDelay = frameRate * 1000;
@@ -273,14 +387,12 @@ window.onload = () => {
       player.y < obj.y + obj.h &&
       player.y + player.h > obj.y
     ) {
-      // you.score+=obj.points;
-      // player.grabbedItems.push(obj)
       player.grabbedItems.push(obj);
+      // player.fillColor = grabbedItems()
       player.fillColor = colors[obj.color];
       itemArr = itemArr.filter(function (item) {
         return obj.id !== item.id;
       });
-      // player.draw(obj.color);
     }
   }
 
@@ -295,20 +407,6 @@ window.onload = () => {
       obj.vx *= -1;
     }
   }
-
-  //   if (obj.y > canvas.height - obj.radius) {
-  //     obj.vy *= obj.restitution;
-  //     obj.y = canvas.height - obj.radius;
-  // }
-
-  // if (obj.x > canvas.width - obj.radius) {
-  //     obj.vx *= obj.restitution;
-  //     obj.x = canvas.width - obj.radius;
-  // }
-  // if (obj.x < obj.radius) {
-  //     obj.vx *= obj.restitution;
-  //     obj.x = obj.radius;
-  // }
 
   let poppedObj = {
     x: null,
@@ -334,36 +432,37 @@ window.onload = () => {
     },
   };
 
-  let droppedArr = [];
+  // let droppedArr = [];
 
   function dropObject() {
     if (spaceship.grabbedItems.length > 0) {
       let obj = spaceship.grabbedItems.pop();
-      console.log(obj);
+
       poppedObj.x = spaceship.x;
       poppedObj.y = spaceship.y + 20;
       poppedObj.color = obj.color;
-      // poppedObj.x = this.x;
-      // poppedObj.y = this.y +20;
-      // poppedObj.draw(spaceship.x, spaceship.y + 20, 20, 20)
-      droppedArr.push({ ...poppedObj });
 
-      // poppedObj.draw(spaceship.x, spaceship.y + 20, 20, 20)
-      // this.x = spaceship.x;
-      // this.y = spaceship.y + 20;
-      // this.w = 20;
-      // this.h = 20;
-      // this.fillColor = "black"
+      if (spaceship.grabbedItems.length < 1) {
+        spaceship.fillColor = null
+      } else 
+      {spaceship.fillColor = colors[spaceship.grabbedItems[spaceship.grabbedItems.length-1].color];}
+
+      droppedArr.push({ ...poppedObj });
+      // spaceship.fillColor = colors[grabbedItems[0].color]
     }
   }
 
   function animloop() {
-    requestAnimationFrame(animloop, canvas);
+    game = window.requestAnimationFrame(animloop, canvas);
     ctx.clearRect(0, 0, w, h);
 
     ctx.fillStyle = "white";
     ctx.font = "24px sans-serif";
-    ctx.fillText(`Score: ${spaceship.score}`, 70, 30);
+    ctx.fillText("Time: " + time, 70, 30);
+
+    ctx.fillStyle = "white";
+    ctx.font = "24px sans-serif";
+    ctx.fillText(`Score: ${spaceship.score}`, 70, 60);
 
     //rotation
     if (keys[37]) spaceship.r -= 0.05;
@@ -386,6 +485,7 @@ window.onload = () => {
 
     // updatePosition(spaceship);
     spaceship.draw();
+    // spaceship.fillColor = colors[grabbedItems[0].color]
 
     obstacle.draw();
 
@@ -421,22 +521,38 @@ window.onload = () => {
 
     for (let i = 0; i < itemArr.length; i++) {
       const item = itemArr[i];
-      ctx.fillStyle = itemArr[i].color;
-      ctx.fillRect(item.x, item.y, item.w, item.h);
+      ctx.fillStyle = colors[itemArr[i].color];
+      ctx.beginPath();
+      ctx.arc(item.x, item.y, 30, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.closePath();
+      // ctx.fillRect(item.x, item.y, item.w, item.h);
+      if (itemArr[i].color === "red") {
+      ctx.drawImage(cow, item.x - 30, item.y - 15, 60, 30)}
+      if (itemArr[i].color === "yellow") {
+        ctx.drawImage(sheep, item.x - 30, item.y - 15, 60, 30)}
+
       detectGrab(spaceship, item);
     }
 
     for (let i = 0; i < droppedArr.length; i++) {
       let droppedObj = droppedArr[i];
-      ctx.fillStyle = droppedArr[i].color;
-      ctx.fillRect(
-        droppedArr[i].x,
-        droppedArr[i].y,
-        droppedObj.w,
-        droppedObj.h
-      );
-      // updatePosition(droppedObj)
-      // updatePosition(droppedObj)
+      ctx.fillStyle = colors[droppedArr[i].color];
+      ctx.beginPath();
+      ctx.arc(droppedObj.x, droppedObj.y, 30, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.closePath();
+      // ctx.fillRect(
+      //   droppedArr[i].x,
+      //   droppedArr[i].y,
+      //   droppedObj.w,
+      //   droppedObj.h
+      // );
+      if (droppedArr[i].color === "red"){
+      ctx.drawImage(cow, droppedArr[i].x - 30, droppedArr[i].y - 15, 60, 30)}
+      if (droppedArr[i].color === "yellow") {
+        ctx.drawImage(sheep, droppedArr[i].x - 30, droppedArr[i].y - 15, 60, 30)}
+
       detectCollision(droppedObj, obstacle);
       detectCollision(droppedObj, slider1);
       detectCollision(droppedObj, slider2);
@@ -445,11 +561,8 @@ window.onload = () => {
       if (droppedArr[i].y > canvas.height) {
         spaceship.score += 1;
         droppedArr.splice(i, 1);
-
-        // droppedArr[i].pop();
       }
-      // console.log(droppedArr)
-      // droppedArr[i].y++
+
     }
 
     // if (droppedObj.y === canvas.height && droppedObj.vy === 0 ) {
@@ -468,5 +581,10 @@ window.onload = () => {
     // detectCollision(poppedObj, slider2)
 
     // if (droppedArr[i].y > canvas.height) {}
+    if (time === 0) {
+      gameOver();
+      }
   }
-};
+// };
+
+
