@@ -30,7 +30,7 @@ body button {
 
 canvas {
   border: 1px solid black;
-  background-image: url("/images/alien-background-1.jpg");
+  background-image: url("alien-background-1.jpg");
   background-size: cover;
   background-repeat: no-repeat;
 }
