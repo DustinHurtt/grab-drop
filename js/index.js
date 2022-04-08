@@ -31,7 +31,7 @@
   let game;
 
   const shipImage = new Image();
-  shipImage.src = "images/alien-spaceship.png";
+  shipImage.src = "alien-spaceship.png";
 
   var spaceshipblueprint = {
     x: w / 2,
@@ -83,7 +83,6 @@
       itemArr = [];
       droppedArr = [];
       spaceshipblueprint.grabbedItems = [];
-      // spaceship.grabbedItems = [];
       spaceship = {...spaceshipblueprint};
       animloop();
     }
@@ -154,10 +153,10 @@ function timer() {
   }
 
   const cow = new Image();
-  cow.src = "/images/Dairy-Cow-PNG-Image.png";
+  cow.src = "Dairy-Cow-PNG-Image.png";
 
   const sheep = new Image();
-  sheep.src = "/images/sheep_on_a_transparent_background_by_zoostock_ddhetu0-fullview.png"
+  sheep.src = "sheep_on_a_transparent_background_by_zoostock_ddhetu0-fullview.png"
 
   let itemArr = [];
   let itemsCreated = 0;
@@ -172,14 +171,13 @@ function timer() {
   };
   
   let waterTower = new Image()
-  waterTower.src = "/images/water-tower.png"
+  waterTower.src = "water-tower.png"
 
   let obstacle = {
     x: canvas.width / 2 - 10,
     y: (canvas.height * 0.6),
     w: 20,
     h: 260,
-    // fillColor : 'black',
     draw: function () {
       ctx.fillStyle = "black";
       ctx.fillRect(this.x, this.y, this.w, this.h);
@@ -188,7 +186,7 @@ function timer() {
   };
 
   let slider = new Image()
-  slider.src = "/images/ufo-platform.png"
+  slider.src = "ufo-platform.png"
 
   let slider1 = {
     x: 0,
@@ -197,8 +195,6 @@ function timer() {
     h: 40,
     sliderSpeed: 6,
     draw: function () {
-      // ctx.fillStyle = "black";
-      // ctx.fillRect(this.x-100, this.y-10, this.w, this.h);
       ctx.drawImage (slider, this.x-126, this.y-30, 250, 60)
     },
   };
@@ -210,8 +206,6 @@ function timer() {
     h: 40,
     sliderSpeed: 6,
     draw: function () {
-      // ctx.fillStyle = "black";
-      // ctx.fillRect(this.x, this.y-10, this.w, this.h);
       ctx.drawImage (slider, this.x-26, this.y-30, 250, 60)
     },
   };
@@ -414,6 +408,8 @@ function timer() {
       ctx.arc(droppedObj.x, droppedObj.y, 30, 0, Math.PI * 2);
       ctx.fill();
       ctx.closePath();
+      ctx.fillStyle = "rgba(250, 250, 250, 0.03)";
+      ctx.fillRect(droppedObj.x-10, droppedObj.y, 20, 700);
 
       if (droppedArr[i].color === "red"){
       ctx.drawImage(cow, droppedArr[i].x - 30, droppedArr[i].y - 15, 60, 30)}
