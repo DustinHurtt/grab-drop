@@ -394,7 +394,7 @@ function timer() {
       ctx.closePath();
      
       if (itemArr[i].color === "red") {
-      ctx.drawImage(cow, item.x - 30, item.y - 15, 60, 30)}
+      ctx.drawImage(cow, item.x - 29, item.y - 15, 60, 30)}
       if (itemArr[i].color === "yellow") {
         ctx.drawImage(sheep, item.x - 30, item.y - 15, 60, 30)}
 
@@ -412,7 +412,7 @@ function timer() {
       ctx.fillRect(droppedObj.x-10, droppedObj.y, 20, 700);
 
       if (droppedArr[i].color === "red"){
-      ctx.drawImage(cow, droppedArr[i].x - 20, droppedArr[i].y - 15, 60, 30)}
+      ctx.drawImage(cow, droppedArr[i].x - 29, droppedArr[i].y - 15, 60, 30)}
       if (droppedArr[i].color === "yellow") {
         ctx.drawImage(sheep, droppedArr[i].x - 30, droppedArr[i].y - 15, 60, 30)}
 
