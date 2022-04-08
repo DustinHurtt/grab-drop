@@ -408,8 +408,19 @@ function timer() {
       ctx.arc(droppedObj.x, droppedObj.y, 30, 0, Math.PI * 2);
       ctx.fill();
       ctx.closePath();
-      ctx.fillStyle = "rgba(250, 250, 250, 0.03)";
-      ctx.fillRect(droppedObj.x-10, droppedObj.y, 20, 700);
+
+      var grd1 = ctx.createLinearGradient(droppedObj.x, droppedObj.y, droppedObj.x-10, droppedObj.y);
+      grd1.addColorStop(0, "rgba(250, 250, 250, 0.08)");
+      grd1.addColorStop(1, "rgba(250, 250, 250, 0.01)");
+
+      var grd2 = ctx.createLinearGradient(droppedObj.x, droppedObj.y, droppedObj.x+10, droppedObj.y);
+      grd2.addColorStop(0, "rgba(250, 250, 250, 0.08)");
+      grd2.addColorStop(1, "rgba(250, 250, 250, 0.01)");
+
+      ctx.fillStyle = grd1;
+      ctx.fillRect(droppedObj.x-10, droppedObj.y, 10, 700);
+      ctx.fillStyle = grd2;
+      ctx.fillRect(droppedObj.x, droppedObj.y, 10, 700);
 
       if (droppedArr[i].color === "red"){
       ctx.drawImage(cow, droppedArr[i].x - 29, droppedArr[i].y - 15, 60, 30)}
