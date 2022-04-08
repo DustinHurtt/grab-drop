@@ -66,6 +66,8 @@
 
   let spaceship = {...spaceshipblueprint};
 
+
+
   let int;
   let gameOn = false;
   let timeInt;
@@ -94,6 +96,21 @@ function timer() {
         time = 60;
     }
   }
+
+  const grabSound = new Audio();
+  grabSound.src = "221091__alaskarobotics__cartoon-pop-or-drip.wav";
+
+  const beamSound = new Audio();
+  beamSound.src = "453391__breviceps__warp-sfx.wav";
+
+  const cowSound = new Audio();
+  cowSound.src = "233141__jarredgibb__cow-moan-1-96khz.wav";
+
+  const sheepSound = new Audio();
+  sheepSound.src = "28326__ftha__sheep-1-2.wav";
+
+  const propelShip = new Audio();
+  propelShip.src = "/168984__lavik89__digital-hit.wav"
 
   function gameOver() {
     window.cancelAnimationFrame(game);
@@ -286,6 +303,9 @@ function timer() {
       itemArr = itemArr.filter(function (item) {
         return obj.id !== item.id;
       });
+            grabSound.play();
+            if (obj.color === "red") {cowSound.play()}
+            if (obj.color === "yellow") {sheepSound.play()}
     }
   }
 
@@ -357,12 +377,14 @@ function timer() {
     if (keys[38]) {
       spaceship.ax = Math.cos(spaceship.r) * 0.05;
       spaceship.ay = Math.sin(spaceship.r) * 0.05;
+      propelShip.play();
     } else {
       spaceship.ax = spaceship.ay = 0;
     }
 
     if (keys[40]) {
       dropObject();
+      beamSound.play();
       keys[40] = null;
     }
 
@@ -394,7 +416,7 @@ function timer() {
       ctx.closePath();
      
       if (itemArr[i].color === "red") {
-      ctx.drawImage(cow, item.x - 29, item.y - 15, 60, 30)}
+      ctx.drawImage(cow, item.x - 29, item.y - 15, 60, 30);}
       if (itemArr[i].color === "yellow") {
         ctx.drawImage(sheep, item.x - 30, item.y - 15, 60, 30)}
 
