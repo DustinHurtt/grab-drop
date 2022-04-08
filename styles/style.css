@@ -12,14 +12,6 @@ body {
   font-family: "Verdana"
 }
 
-/* .logo-img {
-  width: 150px;
-}
-
-.arrows-img {
-  width: 100px;
-} */
-
 body button {
   font-size: 30px;
   background-color: purple;
@@ -33,10 +25,6 @@ body button {
 }
 
 #game-board {
-    /* float: left; */
-
-  /* float: left; */
-  /* padding: 20px 0px; */
   border: 1px solid black;
 }
 
