@@ -110,7 +110,7 @@ function timer() {
   sheepSound.src = "28326__ftha__sheep-1-2.wav";
 
   const propelShip = new Audio();
-  propelShip.src = "/168984__lavik89__digital-hit.wav"
+  propelShip.src = "168984__lavik89__digital-hit.wav"
 
   function gameOver() {
     window.cancelAnimationFrame(game);
