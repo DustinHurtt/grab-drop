@@ -1,1 +1,1 @@
-This is a game I wrote within learning only a few weeks of coding.
+This is a fun little game I built while learning how to code with JavaScript.
